@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rocket Launch Predictor</title>
+    <style>
+        body { font-family: Arial; background-color: #0b0b28; color: white; text-align: center; }
+        h1 { color: #58d68d; }
+        .container { width: 70%; margin: auto; background: #141446; padding: 20px; border-radius: 15px; }
+        input, button, select { padding: 10px; border-radius: 8px; border: none; margin: 5px; }
+        button { background-color: #58d68d; cursor: pointer; }
+        table { margin: auto; border-collapse: collapse; width: 90%; color: white; }
+        th, td { padding: 10px; border: 1px solid #58d68d; }
+        .section { margin: 30px 0; }
+        .graph img { border: 1px solid #58d68d; border-radius: 10px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rocket Launch Predictor</h1>
+
+        <!-- Weather Forecast -->
+        <div class="section">
+            <h2>Bangalore Weather Forecast</h2>
+            {% if bangalore %}
+            <table>
+                <tr>
+                    <th>Date</th>
+                    <th>Condition</th>
+                    <th>Avg Temp (°C)</th>
+                    <th>Wind (km/h)</th>
+                    <th>Humidity (%)</th>
+                    <th>Launch Suitability</th>
+                </tr>
+                {% for day in bangalore %}
+                <tr>
+                    <td>{{ day.date }}</td>
+                    <td>{{ day.condition }}</td>
+                    <td>{{ day.avg_temp }}</td>
+                    <td>{{ day.wind }}</td>
+                    <td>{{ day.humidity }}</td>
+                    <td>{{ day.status }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p>Weather data unavailable.</p>
+            {% endif %}
+        </div>
+
+        <hr style="border: 1px solid #58d68d;">
+
+        <!-- Launch Conditions -->
+        <div class="section">
+            <h2>Test Your Own Launch Conditions</h2>
+            <form method="POST">
+                <input type="number" name="temp" placeholder="Temperature (°C)" step="0.1" required>
+                <input type="number" name="wind" placeholder="Wind (km/h)" step="0.1" required>
+                <input type="number" name="humidity" placeholder="Humidity (%)" step="0.1" required>
+                <input type="number" name="mass" placeholder="Rocket Mass (kg)" step="0.1" required>
+                <input type="number" name="solar" placeholder="Solar Radiation Index (W/m²)" step="0.1" required>
+                <button type="submit">Predict</button>
+            </form>
+
+            {% if user_data %}
+            <div style="margin-top: 20px;">
+                <h3>Result: {{ user_data.status }}</h3>
+                <p>🧾 Reason: {{ user_data.reason }}</p>
+                <p>🌡️ Temperature: {{ user_data.temp }} °C</p>
+                <p>💨 Wind Speed: {{ user_data.wind }} km/h</p>
+                <p>💧 Humidity: {{ user_data.humidity }} %</p>
+                <p>☀️ Solar Radiation Index: {{ user_data.solar }} W/m²</p>
+                <p>🚀 Rocket Mass: {{ user_data.mass }} kg</p>
+                <p>🪐 Escape Velocity: {{ "%.2f"|format(escape_v) }} km/s</p>
+                <p>⛽ Estimated Fuel Burn: {{ fuel_used }} kg</p>
+
+                {% if graph_url %}
+                <div class="graph">
+                    <h3>Rocket Height vs Time</h3>
+                    <img src="data:image/png;base64,{{ graph_url }}" width="500">
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <hr style="border: 1px solid #58d68d;">
+
+        <!-- Thermal Expansion -->
+        <div class="section">
+            <h2>Thermal Expansion Simulation</h2>
+            <form method="POST">
+                <select name="material" required>
+                    <option value="">-- Select Material --</option>
+                    <option value="aluminum">Aluminum</option>
+                    <option value="titanium">Titanium</option>
+                    <option value="steel">Steel</option>
+                    <option value="carbon composite">Carbon Composite</option>
+                </select>
+                <input type="number" name="initial_length" placeholder="Initial Length (m)" step="0.001" required>
+                <input type="number" name="t1" placeholder="Initial Temp (°C)" step="0.1" required>
+                <input type="number" name="t2" placeholder="Final Temp (°C)" step="0.1" required>
+                <button type="submit">Simulate Expansion</button>
+            </form>
+
+            {% if expansion_data %}
+            <div style="margin-top: 20px;">
+                <h3>Material: {{ expansion_data.material }}</h3>
+                <p>Coefficient α = {{ expansion_data.alpha }} /°C</p>
+                <p>Initial Length = {{ expansion_data.initial_length }} m</p>
+                <p>Temperature Change = {{ expansion_data.delta_T }} °C</p>
+                <p>Expansion = {{ expansion_data.delta_L }} m</p>
+                <p>New Length = {{ expansion_data.new_L }} m</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
