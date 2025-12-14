@@ -1,0 +1,2 @@
+# Rocket-Launch-Condition-analyser-basic-
+Takes real time data from a weather api to show the weather conditions of banglore and predicts if they are suitable for launching a rocket or not. Also takes manual input conditions and predicts suitability for launch, escape velocity, estimated fuel burn,thermal expansion and generates height-time graph assuming a straight line trajectory 
